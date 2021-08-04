@@ -7,7 +7,8 @@ const validate_params = async (filename: string | unknown, width: string | unkno
 
   let is_file_exists : boolean = false
   let is_file_format_valid : boolean = false
-  try {
+  try
+  {
       let fileData = await fsPromises.open(  __dirname + '/../../images/full/' + (filename as string), "r");
       await fileData.close();
       if (( (filename as string).split('.jpg').length > 1) || ((filename as string).split('.jpeg').length > 1))
@@ -24,8 +25,8 @@ const validate_params = async (filename: string | unknown, width: string | unkno
   let is_size_valid : boolean = true;
   try
   {
-    width = Number((width as string));
-    height = Number((height as string));
+      width = Number((width as string));
+      height = Number((height as string));
   }
   catch
   {
@@ -33,11 +34,12 @@ const validate_params = async (filename: string | unknown, width: string | unkno
   }
 
   if (isNaN((width as number)) || isNaN((height as number))){
-    is_size_valid = false;
+      is_size_valid = false;
   }
 
   return [is_file_exists, is_file_format_valid, is_size_valid]
 }
+
 
 
 const urlvalidator =  async (req: Request, res: Response, next : Function) => {
@@ -48,7 +50,7 @@ const urlvalidator =  async (req: Request, res: Response, next : Function) => {
 
   let [is_file_exists, is_file_format_valid, is_size_valid] = await validate_params(filename, width, height)
 
-  console.log('is_file_exists: ', is_file_exists, is_file_format_valid, is_size_valid)
+
   if (!is_file_exists)
   {
       res.status(404);
@@ -66,7 +68,7 @@ const urlvalidator =  async (req: Request, res: Response, next : Function) => {
   }
   else
   {
-    next()
+      next()
   }
 
 }

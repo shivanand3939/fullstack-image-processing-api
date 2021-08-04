@@ -1,11 +1,12 @@
 import express from 'express';
 import routes1 from './api/route1';
-const routes = express.Router();
+import { Router, Request, Response } from 'express';
+
+const routes: Router = express.Router();
 
 
 
-routes.get('/', (req, res) => {
-
+routes.get('/', (req: Request, res: Response) => {
   res.send('main api route');
 });
 

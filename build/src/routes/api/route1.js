@@ -40,22 +40,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var routes1 = express_1.default.Router();
 var urlvalidator_1 = __importDefault(require("./../../middleware/urlvalidator"));
 var fs_1 = require("fs");
 var sharp_1 = __importDefault(require("./../../image_processing/sharp"));
-routes1.get('/', urlvalidator_1.default.urlvalidator, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var filename, width, height, output_filename, fileData, e_1, process_image, err_1;
+var routes1 = express_1.default.Router();
+routes1.get('/', urlvalidator_1.default.urlvalidator, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var filename, width, height, output_filename, fileData, e_1, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 filename = req.query['filename'];
                 width = req.query['width'];
                 height = req.query['height'];
-                console.log('filename: ', filename, 'width: ', width, 'height: ', height);
                 output_filename = filename.split('.jpg')[0];
                 output_filename = output_filename + '-' + width + '-' + height + '-.jpg';
-                console.log('dir: ', __dirname + '/../../../images/thumb/');
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 4, , 9]);
@@ -67,7 +65,6 @@ routes1.get('/', urlvalidator_1.default.urlvalidator, function (req, res, next) 
                 _a.sent();
                 res.status(200);
                 res.sendFile(output_filename, { root: __dirname + '/../../../images/thumb' });
-                console.log('image exists', output_filename);
                 return [3 /*break*/, 9];
             case 4:
                 e_1 = _a.sent();
@@ -76,8 +73,7 @@ routes1.get('/', urlvalidator_1.default.urlvalidator, function (req, res, next) 
                 _a.trys.push([5, 7, , 8]);
                 return [4 /*yield*/, sharp_1.default(filename, Number(width), Number(height), output_filename)];
             case 6:
-                process_image = _a.sent();
-                console.log('process_image: ', process_image);
+                _a.sent();
                 res.status(200);
                 res.sendFile(output_filename, { root: __dirname + './../../../images/thumb' });
                 return [3 /*break*/, 8];
@@ -86,11 +82,7 @@ routes1.get('/', urlvalidator_1.default.urlvalidator, function (req, res, next) 
                 res.status(404);
                 res.send('inside test error 404' + err_1);
                 return [3 /*break*/, 8];
-            case 8:
-                //.then( (data : unknown) => { res.status(200); res.sendFile( (output_filename as string), { root:  __dirname + './../../../images/thumb' }) })
-                //.catch( (err : string) => { res.status(404); res.send('inside test error 404' + err); });
-                console.log('image does not exists', output_filename);
-                return [3 /*break*/, 9];
+            case 8: return [3 /*break*/, 9];
             case 9: return [2 /*return*/];
         }
     });

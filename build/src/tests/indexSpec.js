@@ -55,21 +55,20 @@ describe('Validating functions', function () {
                 case 0: return [4 /*yield*/, urlvalidator_1.default.validate_params(VALID_FILE, 300, 300)];
                 case 1:
                     res = _a.sent();
-                    console.log('res: ', res);
                     expect(res).toEqual([true, true, true]);
                     return [2 /*return*/];
             }
         });
     }); });
     it('validating sharp image processing', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var output_filename, process_image, fileData, err_1;
+        var output_filename, fileData, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     output_filename = VALID_FILE.split('.jpg')[0] + '-' + width.toString() + '-' + height.toString() + '-.jpg';
                     return [4 /*yield*/, sharp_1.default(VALID_FILE, Number(width), Number(height), output_filename)];
                 case 1:
-                    process_image = _a.sent();
+                    _a.sent();
                     _a.label = 2;
                 case 2:
                     _a.trys.push([2, 5, , 6]);

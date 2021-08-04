@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import validator from './../middleware/urlvalidator';
 import {promises as fsPromises} from 'fs';
 import image_processing from './../image_processing/sharp'
@@ -13,18 +13,18 @@ describe('Validating functions', () => {
 
     it('validating input params', async () => {
 
-      let res = await validator.validate_params(VALID_FILE, 300, 300) 
+      let res = await validator.validate_params(VALID_FILE, 300, 300)
       expect(res).toEqual([true, true, true])
     });
 
     it( 'validating sharp image processing', async () => {
       let output_filename: string = VALID_FILE.split('.jpg')[0] + '-' + width.toString() + '-' + height.toString() + '-.jpg'
-      let process_image: unknown = await image_processing(VALID_FILE, Number(width), Number(height), output_filename)
-      try {
-
-    			let fileData = await fsPromises.open(  __dirname + '/../../../images/thumb/' + (output_filename as string), "r");
-    			await fileData.close();
-          expect(fileData).toBeTruthy();
+      await image_processing(VALID_FILE, Number(width), Number(height), output_filename)
+      try
+      {
+        let fileData = await fsPromises.open(  __dirname + '/../../../images/thumb/' + (output_filename as string), "r");
+        await fileData.close();
+        expect(fileData).toBeTruthy();
       }
       catch (err) {
           //Throwing an error as this should not happen

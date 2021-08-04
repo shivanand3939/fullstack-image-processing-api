@@ -1,12 +1,14 @@
 module.exports = {
     "env": {
+        "es2021": true,
         "browser": true,
-        "es2021": true
+    		"commonjs": true,
+    		"node": true,
+    		"mocha": true,
+         "jasmine": true
     },
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -14,10 +16,10 @@ module.exports = {
             "jsx": true
         },
         "ecmaVersion": 12,
-        "sourceType": "module"
+        "sourceType": "module",
+        "parser": "babel-eslint",
     },
     "plugins": [
-        "react",
         "@typescript-eslint"
     ],
     "rules": {
