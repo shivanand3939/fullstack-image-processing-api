@@ -40,40 +40,92 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = __importDefault(require("axios"));
+var urlvalidator_1 = __importDefault(require("./../middleware/urlvalidator"));
+var fs_1 = require("fs");
+var sharp_1 = __importDefault(require("./../image_processing/sharp"));
 var VALID_FILE = "icelandwaterfall.jpg";
 var INVALID_FILE = "invalid.jpg";
-//Write a test for valid file
-it('checking if a valid file creates a valid image', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var url, res;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                url = 'http://localhost:3001/api/images?filename=' + VALID_FILE + '&width=300&height=200';
-                return [4 /*yield*/, axios_1.default.get(url)];
-            case 1:
-                res = _a.sent();
-                expect(res.status).toEqual(200);
-                return [2 /*return*/];
-        }
-    });
-}); });
-// write a test for invalid file
-it('checking if a invalid file sends 404 error', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var url, res, err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                url = 'http://localhost:3001/api/images?filename=' + INVALID_FILE + '&width=300&height=200';
-                return [4 /*yield*/, axios_1.default.get(url)];
-            case 1:
-                res = _a.sent();
-                return [3 /*break*/, 3];
-            case 2:
-                err_1 = _a.sent();
-                expect(err_1.response.status).toEqual(404);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); });
+var width = 300;
+var height = 300;
+describe('Validating functions', function () {
+    it('validating input params', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, urlvalidator_1.default.validate_params(VALID_FILE, 300, 300)];
+                case 1:
+                    res = _a.sent();
+                    console.log('res: ', res);
+                    expect(res).toEqual([true, true, true]);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('validating sharp image processing', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var output_filename, process_image, fileData, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    output_filename = VALID_FILE.split('.jpg')[0] + '-' + width.toString() + '-' + height.toString() + '-.jpg';
+                    return [4 /*yield*/, sharp_1.default(VALID_FILE, Number(width), Number(height), output_filename)];
+                case 1:
+                    process_image = _a.sent();
+                    _a.label = 2;
+                case 2:
+                    _a.trys.push([2, 5, , 6]);
+                    return [4 /*yield*/, fs_1.promises.open(__dirname + '/../../../images/thumb/' + output_filename, "r")];
+                case 3:
+                    fileData = _a.sent();
+                    return [4 /*yield*/, fileData.close()];
+                case 4:
+                    _a.sent();
+                    expect(fileData).toBeTruthy();
+                    return [3 /*break*/, 6];
+                case 5:
+                    err_1 = _a.sent();
+                    //Throwing an error as this should not happen
+                    expect(5).toBe(15);
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
+            }
+        });
+    }); });
+});
+describe('Validating http requests: ', function () {
+    //Write a test for valid file
+    it('checking if a valid file creates a valid image', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var url, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    url = 'http://localhost:3001/api/images?filename=' + VALID_FILE + '&width=300&height=200';
+                    return [4 /*yield*/, axios_1.default.get(url)];
+                case 1:
+                    res = _a.sent();
+                    expect(res.status).toEqual(200);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    // write a test for invalid file
+    it('checking if a invalid file sends 404 error', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var url, res, err_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    url = 'http://localhost:3001/api/images?filename=' + INVALID_FILE + '&width=300&height=200';
+                    return [4 /*yield*/, axios_1.default.get(url)];
+                case 1:
+                    res = _a.sent();
+                    expect(res.status).toEqual(404);
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_2 = _a.sent();
+                    expect(err_2.response.status).toEqual(404);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); });
+});

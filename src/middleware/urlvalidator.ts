@@ -2,30 +2,24 @@ import {promises as fsPromises} from 'fs';
 
 import { Request, Response } from 'express';
 
-const urlvalidator = async (req: Request, res: Response, next : Function) => {
 
-  let filename: (string | unknown) = req.query['filename']
-  let width: (string | unknown) = req.query['width']
-  let height: (string | unknown) = req.query['height']
+const validate_params = async (filename: string | unknown, width: string | unknown, height: string | unknown) : Promise<boolean[]> => {
 
   let is_file_exists : boolean = false
   let is_file_format_valid : boolean = false
   try {
-			let fileData = await fsPromises.open(  __dirname + '/../images/full/' + (filename as string), "r");
-			await fileData.close();
+      let fileData = await fsPromises.open(  __dirname + '/../../images/full/' + (filename as string), "r");
+      await fileData.close();
       if (( (filename as string).split('.jpg').length > 1) || ((filename as string).split('.jpeg').length > 1))
       {
           is_file_format_valid = true;
       }
       is_file_exists = true;
-	}
+  }
   catch (e)
   {
-			is_file_exists = false;
-	}
-
-
-
+      is_file_exists = false;
+  }
 
   let is_size_valid : boolean = true;
   try
@@ -42,6 +36,19 @@ const urlvalidator = async (req: Request, res: Response, next : Function) => {
     is_size_valid = false;
   }
 
+  return [is_file_exists, is_file_format_valid, is_size_valid]
+}
+
+
+const urlvalidator =  async (req: Request, res: Response, next : Function) => {
+
+  let filename: (string | unknown) = req.query['filename']
+  let width: (string | unknown) = req.query['width']
+  let height: (string | unknown) = req.query['height']
+
+  let [is_file_exists, is_file_format_valid, is_size_valid] = await validate_params(filename, width, height)
+
+  console.log('is_file_exists: ', is_file_exists, is_file_format_valid, is_size_valid)
   if (!is_file_exists)
   {
       res.status(404);
@@ -65,4 +72,4 @@ const urlvalidator = async (req: Request, res: Response, next : Function) => {
 }
 
 
-export default urlvalidator;
+export default { urlvalidator , validate_params };

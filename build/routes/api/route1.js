@@ -35,78 +35,52 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var express_1 = __importDefault(require("express"));
+var routes1 = express_1.default.Router();
+var urlvalidator_1 = __importDefault(require("./../../middleware/urlvalidator"));
 var fs_1 = require("fs");
-var validate_params = function (filename, width, height) { return __awaiter(void 0, void 0, void 0, function () {
-    var is_file_exists, is_file_format_valid, fileData, e_1, is_size_valid;
+var sharp = require('sharp');
+routes1.get('/', urlvalidator_1.default.urlvalidator, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var filename, width, height, output_filename, fileData, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                is_file_exists = false;
-                is_file_format_valid = false;
+                filename = req.query['filename'];
+                width = req.query['width'];
+                height = req.query['height'];
+                console.log('filename: ', filename, 'width: ', width, 'height: ', height);
+                output_filename = filename.split('.jpg')[0];
+                output_filename = output_filename + '-' + width + '-' + height + '-.jpg';
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 4, , 5]);
-                return [4 /*yield*/, fs_1.promises.open(__dirname + '/../images/full/' + filename, "r")];
+                return [4 /*yield*/, fs_1.promises.open(__dirname + '/../../../images/thumb/' + output_filename, "r")];
             case 2:
                 fileData = _a.sent();
                 return [4 /*yield*/, fileData.close()];
             case 3:
                 _a.sent();
-                if ((filename.split('.jpg').length > 1) || (filename.split('.jpeg').length > 1)) {
-                    is_file_format_valid = true;
-                }
-                is_file_exists = true;
+                res.status(200);
+                res.sendFile(output_filename, { root: __dirname + './../../../images/thumb' });
+                console.log('image exists', output_filename);
                 return [3 /*break*/, 5];
             case 4:
                 e_1 = _a.sent();
-                is_file_exists = false;
+                sharp('images/full/' + filename)
+                    .rotate()
+                    .resize(Number(width), Number(height))
+                    .jpeg({ mozjpeg: true })
+                    .toFile('images/thumb/' + output_filename)
+                    .then(function (data) { res.status(200); res.sendFile(output_filename, { root: __dirname + './../../../images/thumb' }); })
+                    .catch(function (err) { res.status(404); res.send('inside test error 404' + err); });
+                console.log('image does not exists', output_filename);
                 return [3 /*break*/, 5];
-            case 5:
-                is_size_valid = true;
-                try {
-                    width = Number(width);
-                    height = Number(height);
-                }
-                catch (_b) {
-                    is_size_valid = false;
-                }
-                if (isNaN(width) || isNaN(height)) {
-                    is_size_valid = false;
-                }
-                return [2 /*return*/, [is_file_exists, is_file_format_valid, is_size_valid]];
+            case 5: return [2 /*return*/];
         }
     });
-}); };
-var urlvalidator = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var filename, width, height, _a, is_file_exists, is_file_format_valid, is_size_valid;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                filename = req.query['filename'];
-                width = req.query['width'];
-                height = req.query['height'];
-                return [4 /*yield*/, validate_params(filename, width, height)];
-            case 1:
-                _a = _b.sent(), is_file_exists = _a[0], is_file_format_valid = _a[1], is_size_valid = _a[2];
-                console.log('is_file_exists: ', is_file_exists, is_file_format_valid, is_size_valid);
-                if (!is_file_exists) {
-                    res.status(404);
-                    res.send('404 - The image does not exist in the images folder.');
-                }
-                else if (!is_file_format_valid) {
-                    res.status(404);
-                    res.send('404 - The image format is invalid. Only supports jpg files');
-                }
-                else if (!is_size_valid) {
-                    res.status(404);
-                    res.send('404 - Please enter valid height and width param');
-                }
-                else {
-                    next();
-                }
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.default = { urlvalidator: urlvalidator, validate_params: validate_params };
+}); });
+exports.default = routes1;

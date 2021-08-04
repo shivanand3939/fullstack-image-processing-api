@@ -47,7 +47,7 @@ var validate_params = function (filename, width, height) { return __awaiter(void
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 4, , 5]);
-                return [4 /*yield*/, fs_1.promises.open(__dirname + '/../images/full/' + filename, "r")];
+                return [4 /*yield*/, fs_1.promises.open(__dirname + '/../../images/full/' + filename, "r")];
             case 2:
                 fileData = _a.sent();
                 return [4 /*yield*/, fileData.close()];
