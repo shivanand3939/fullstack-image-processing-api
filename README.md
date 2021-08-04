@@ -12,4 +12,4 @@ Steps to set-up
     - the filename should be present in the build/images/full folder and the processed image will be in build/images/thumb folder
     - inherent caching is present i.e if the file is already processed then will show the processed file itself
 - To perform testing using jasmine, run 'npm run test'
-    - have configured 2 tests, one for valid image and another for invalid image
+    - have configured 2 tests, one for valid image and another for invalid image. file present in src/tests/indexSpec.ts after build it is in build/src/tests/indexSpec.js
