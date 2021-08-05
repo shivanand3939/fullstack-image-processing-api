@@ -89,7 +89,6 @@ var urlvalidator = function (req, res, next) { return __awaiter(void 0, void 0, 
                 return [4 /*yield*/, validate_params(filename, width, height)];
             case 1:
                 _a = _b.sent(), is_file_exists = _a[0], is_file_format_valid = _a[1], is_size_valid = _a[2];
-                console.log('is_file_exists: ', is_file_exists, is_file_format_valid, is_size_valid);
                 if (!is_file_exists) {
                     res.status(404);
                     res.send('404 - The image does not exist in the images folder.');
